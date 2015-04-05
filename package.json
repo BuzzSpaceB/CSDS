@@ -14,7 +14,6 @@
     "electrolyte": "0.0.6",
     "express": "~4.12.2",
     "handlebars": "^3.0.0",
-    "jsreport": "^0.2.10",
     "ldapjs": "^0.7.1",
     "missing": "0.0.1",
     "mongoose": "^3.8.25",
