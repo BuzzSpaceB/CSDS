@@ -1,5 +1,5 @@
-var logon= require("./GetUserInfo/GetUserInfo");
-var ldap =require("./node_modules/ldapjs/lib/index");
+var logon= require("./login");
+var ldap =require("./ldapjs");
 var client=ldap.createClient({
     url: "ldap://reaper.up.ac.za"
 });

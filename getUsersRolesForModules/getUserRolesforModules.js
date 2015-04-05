@@ -1,11 +1,6 @@
 /**
  * Created by Sannah Msiza on 2015/04/02.
  */
-
-var ldap =require("./../node_modules/ldapjs/lib/index");
-var client=ldap.createClient({
-    url: "ldap://reaper.up.ac.za"
-});
 module.exports.getUsersRolesForModule= function getUsersRolesForModule(getUsersRolesForModuleRequest,client,getUsersRolesForModuleResult) {
     {
         base = 'ou=Computer Science,o=University of Pretoria,c=ZA';
@@ -52,59 +47,4 @@ module.exports.getUsersRolesForModule= function getUsersRolesForModule(getUsersR
             });
         });
     }
-}
-
-/**call back function to retrieve values from the ldap server
- *It has 2 parameters message na
- * **/
-
-module.exports.getUsersRolesForModuleResult =function getUsersRolesForModuleResult(msg,obj,mid,uid)
-{
-
-    if(obj==null)
-    {
-        throw msg;
-    }
-    else
-    {
-        console.log(msg);
-        console.log(obj);
-    }
-}
-
-/**call back to retrieve the status of the connection to ldap
- * It has 2 parameters msg and status
- * @ param status :is a boolean value on the status of the connection
- * @ para msg  : is the string message saying tif there is a connection
- * if no connection is made the client unbinds to the server
- **/
-module.exports.CheckConnection=function CheckConnection(msg,status,uname,pword)
-{
-
-    if(status)
-    {
-        console.log(msg);
-        logon.Login(new getUsersRolesForModuleRequest(uname,pword),client,getUsersRolesForModuleResult());
-    }
-    else
-    {
-        client.unbind();
-        throw msg;
-
-    }
-}
-
-
-module.exports.getUsersRolesForModuleRequest=function getUsersRolesForModuleRequest(mid,uid)
-{
-    this.mid=mid;
-    this.uid=uid;
-
-    this.mID = function() {
-        return this.mid;
-    };
-
-    this.uID = function () {
-        return this.uid;
-    };
 }
