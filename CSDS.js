@@ -44,6 +44,22 @@ function Check(client,base,Result)
     });
 }
 
+module.exports.getUsersWithRole= function(getUsersWithRoleRequest,client,base,getUsersWithRoleResult)
+{
+Check(client,base,function(msg,state,client)
+{
+  if(!state)
+      {
+        client.unbind();
+        throw msg;
+      }
+  else
+     {
+      getUsersWithRole(getUsersWithRoleRequest,client,base,getUsersWithRoleResult)
+     }
+}     
+);
+}
 
 function  getUsersWithRole( getUsersWithRoleRequest,client,base,getUsersWithRoleResult)
 {
