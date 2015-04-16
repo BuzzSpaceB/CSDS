@@ -261,3 +261,52 @@ function getUsersRolesForModule(getUsersRolesForModuleRequest,client,base,getUse
     });
 
 }
+
+//CALLBACK FUNCTIONS
+
+module.exports.LoginResult=function LoginResult(msg,uid)
+{
+  if(uid==null)
+  {
+    throw msg;
+  }
+  else
+  {
+    result=new Object();
+    result.uid=uid;
+    result.message="Succesfull Conection";
+    return JSON.stringify(result);
+    
+  }
+}
+
+module.exports.getUsersWithRoleResult=function getUsersWithRoleResult(msg,roleID,membersArray)
+{
+  if(roleID==null)
+  {
+    throw msg;
+  }
+  else
+  { result=new Object();
+    result.roleID=roleID;
+    result.members=membersArray;
+    console.log(roleID);
+    console.log(membersArray);
+    return JSON.stringify(result);
+  }
+}
+
+module.exports.getUsersRolesForModuleResult=function getUsersRolesForModuleResult(_message, _uID, _mID, _rolls)
+{
+    if(_message!=null)
+    {
+        throw _message;
+    }
+    else{
+        result=new Object();
+        result.uid=_uID;
+        result.mid=_mID;
+        result.roles=_rolls;
+        return JSON.stringify(result);
+       }
+}
