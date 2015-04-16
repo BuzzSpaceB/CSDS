@@ -108,3 +108,70 @@ function  getUsersWithRole( getUsersWithRoleRequest,client,base,getUsersWithRole
 
 }
 
+module.exports.Login= function(LoginRequest,client,base,LoginResult)
+{		
+Check(client,base,function(msg,state,client)
+	{
+	  if(!state)
+	      {
+		client.unbind();
+		throw msg;
+	      }
+	  else
+	     {
+	       Login(LoginRequest,client,base,LoginResult)
+	     } 
+}     
+);
+
+}
+
+
+function Login(LoginRequest,client,base,LoginResult)
+{
+    if(base.length==0)
+    {
+        base = 'ou=Computer Science,o=University of Pretoria,c=ZA';
+    }
+    var opts =
+    {
+        filter: "uid="+LoginRequest.username(),//+loginRequest.username();
+        scope: 'sub'
+    };
+
+    var entry;
+    var assert=require("assert");
+    return client.search(base, opts, function (err, res) {
+        if (err) {
+            client.unbind();
+            return LoginResult(err, null);
+        }
+        res.on('searchEntry', function (_entry) {
+            entry = _entry;
+        });
+
+        res.on('error', function (err) {
+            client.unbind();
+            return LoginResult(err,null);
+        });
+
+        res.on('end', function () {
+            if (!entry)
+            {
+                client.unbind();
+                return LoginResult(new Error(LoginRequest.username() + ' not found'),null);
+            }
+            return client.bind(entry.dn.toString(),LoginRequest.password(), function (err) {
+                if (err)
+                {
+                    client.unbind();
+                    return LoginResult(err, null);
+                }
+                return client.unbind(function (err) {
+                    assert.ifError(err);
+                    return LoginResult(null,entry.toObject().uid);
+                });
+            });
+        });
+    });
+}
