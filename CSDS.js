@@ -1,3 +1,50 @@
+
+ module.exports.getConection=function(urls)
+ { 
+      if(urls==null)
+	 urls="ldap://reaper.up.ac.za";
+	 
+      var ldap=require("./ldapjs");
+   return ldap.createClient({url: urls});
+ }
+ 
+ 
+function Check(client,base,Result)
+{
+    if(base.length==0)
+    {
+        base = 'ou=Computer Science,o=University of Pretoria,c=ZA';
+    }
+    var opts =
+    {
+        filter: "uid=*",//LoginRequest.username(),//+loginRequest.username();
+        scope: 'sub'
+    };
+
+    var entry;
+    var assert=require("assert");
+    return client.search(base, opts, function (err, res) {
+        if (err)
+            return Result("UnSuccessful_Connection",false,client);
+
+        res.on('searchEntry', function (_entry) {
+          // console.log(_entry.toObject());
+            entry = _entry;
+        });
+
+        res.on('error', function (err) {
+            return Result("UnSuccessful_Connection",false,client);
+        });
+
+        res.on('end', function () {
+
+            return Result("Successful_Connection",true,client);
+
+        });
+    });
+}
+
+
 function  getUsersWithRole( getUsersWithRoleRequest,client,base,getUsersWithRoleResult)
 {
 
@@ -44,3 +91,4 @@ function  getUsersWithRole( getUsersWithRoleRequest,client,base,getUsersWithRole
         });
 
 }
+
