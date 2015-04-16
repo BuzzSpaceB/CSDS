@@ -1,3 +1,12 @@
+/* this function is strictly for testing purposes to check there is a connection
+  @param client what is being checked
+  @param base needed for searching
+  @param Result callback
+ */
+module.exports.checkConnection=function (client,base,Result)
+{
+  Check(client,base,Result);	
+}
 /* this function connects to a ldap server and returns the client
   @ param urls : that is the url for th server
  */
@@ -323,6 +332,7 @@ module.exports.LoginResult=function LoginResult(msg,uid)
     result=new Object();
     result.uid=uid;
     result.message="Succesfull Conection";
+    console.log(result.uid+"has a "+result.message);
     return JSON.stringify(result);
     
   }
@@ -361,6 +371,9 @@ module.exports.getUsersRolesForModuleResult=function getUsersRolesForModuleResul
         result.uid=_uID;
         result.mid=_mID;
         result.roles=_rolls;
+	console.log(_uID);
+	console.log(_mID);
+	console.log(_rolls);
         return JSON.stringify(result);
        }
 }
