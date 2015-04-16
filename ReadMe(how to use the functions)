@@ -1,0 +1,15 @@
+for all functions you first have to call the getConnection() function in CSDS.js
+
+then that will return a client
+
+Then you can use it in any of the function it is passed in as the second paramter
+
+All functions will unbind with the client after they execute because it will
+
+hang if you do not unbind
+
+so you will have to establish a new connection each time you uses a function
+
+there Three Examples.js files to show you how it is implemented
+
+
