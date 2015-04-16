@@ -308,7 +308,10 @@ function getUsersRolesForModule(getUsersRolesForModuleRequest,client,base,getUse
 
 //CALLBACK FUNCTIONS
 
-
+/*
+this is the callback function for Login
+it gets it two parameters and changes the to a JSON object;
+*/
 module.exports.LoginResult=function LoginResult(msg,uid)
 {
   if(uid==null)
@@ -324,7 +327,10 @@ module.exports.LoginResult=function LoginResult(msg,uid)
     
   }
 }
-
+/*
+this is the callback function for getUsersWithRole
+it gets it two parameters and changes the to a JSON object;
+*/
 module.exports.getUsersWithRoleResult=function getUsersWithRoleResult(msg,roleID,membersArray)
 {
   if(roleID==null)
@@ -340,7 +346,10 @@ module.exports.getUsersWithRoleResult=function getUsersWithRoleResult(msg,roleID
     return JSON.stringify(result);
   }
 }
-
+/*
+this is the callback function for getUsersRolesForModuleResult
+it gets it two parameters and changes the to a JSON object;
+*/
 module.exports.getUsersRolesForModuleResult=function getUsersRolesForModuleResult(_message, _uID, _mID, _rolls)
 {
     if(_message!=null)
