@@ -175,3 +175,89 @@ function Login(LoginRequest,client,base,LoginResult)
         });
     });
 }
+
+module.exports.getUsersRolesForModule= function(getUsersRolesForModuleRequest,client,base,getUsersRolesForModuleResult)
+{
+Check(client,base,function(msg,state,client)
+{
+  if(!state)
+      {
+        client.unbind();
+        throw msg;
+      }
+  else
+     {
+      getUsersRolesForModule(getUsersRolesForModuleRequest, client, base, getUsersRolesForModuleResult)
+     } 
+}     
+);
+
+}
+
+function getUsersRolesForModule(getUsersRolesForModuleRequest,client,base,getUsersRolesForModuleResult) {
+
+    if(base.length==0)
+    {
+        base = 'ou=Computer Science,o=University of Pretoria,c=ZA';
+    }
+    var opts =
+    {
+        filter: "cn=*"+getUsersRolesForModuleRequest.mID(),//+loginRequest.username();
+        scope: 'sub'
+    };
+
+    var entry=new Array();
+    var assert = require("assert");
+    return client.search(base, opts, function (err, res) {
+        if (err)
+        {
+            client.unbind();
+            console.log("EEErr");
+            return getUsersRolesForModuleResult(err, null,null,null);
+        }
+        res.on('searchEntry', function (_entry)
+        {
+
+            entry.push(_entry.toObject());
+        });
+
+        res.on('error', function (err) {
+            client.unbind();
+            return getUsersRolesForModuleResult(err, null,getUsersRolesForModuleRequest.mID(),getUsersRolesForModuleRequest.uID());
+        });
+
+        res.on('end', function () {
+            if (entry.length==0)
+            {
+                client.unbind();
+
+                return getUsersRolesForModuleResult(new Error(getUsersRolesForModuleRequest.mID() + ' is not a Existing module'), null,null,null);
+            }
+            else
+            {  var arr=new Array();
+                for(var i=0;i<entry.length;i++)
+                {
+                    if(entry[i].memberUid!=null)
+                    {
+                        for (var j = 0; j < entry[i].memberUid.length; j++) {
+                            if (entry[i].memberUid[j] == getUsersRolesForModuleRequest.uID())
+                                arr.push(entry[i].cn);
+                        }
+                    }
+                }
+                if(arr.length==0)
+                {
+                    client.unbind();
+                    return getUsersRolesForModuleResult(new Error(getUsersRolesForModuleRequest.mID()+" does not Exist or Doesn not have this module"),getUsersRolesForModuleRequest.uID(), getUsersRolesForModuleRequest.mID(),arr);
+                }
+                else
+                {
+                    client.unbind();
+                    return getUsersRolesForModuleResult(null,getUsersRolesForModuleRequest.uID(), getUsersRolesForModuleRequest.mID(), arr);
+                }
+            }
+           
+        });
+    });
+
+}
