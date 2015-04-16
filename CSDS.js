@@ -1,4 +1,6 @@
-
+/* this function connects to a ldap server and returns the client
+  @ param urls : that is the url for th server
+ */
  module.exports.getConection=function(urls)
  { 
       if(urls==null)
@@ -8,7 +10,12 @@
    return ldap.createClient({url: urls});
  }
  
- 
+ /*
+   this function will recive the client parameter and then check if it is connnected to that server
+   @param client this is the client object that needs to checked
+   @param base this is the base used for the search
+   @param result this is the call back parameter
+ */
 function Check(client,base,Result)
 {
     if(base.length==0)
@@ -44,6 +51,13 @@ function Check(client,base,Result)
     });
 }
 
+/*this is the wrapper function for getUsersWithRole
+  it receives the 4 parameters and pass it to the getUsersWithRole function
+  @param getUsersWithRoleRequest request object which has the roleID
+  @param client object that connects to the server
+  @param base string for ldap search
+  @param getUsersWithRoleResult call back function
+*/
 module.exports.getUsersWithRole= function(getUsersWithRoleRequest,client,base,getUsersWithRoleResult)
 {
 Check(client,base,function(msg,state,client)
@@ -60,7 +74,13 @@ Check(client,base,function(msg,state,client)
 }     
 );
 }
-
+/*this  function gets an array of users for specific role
+  it receives the 4 parameters and passed in it 
+  @param getUsersWithRoleRequest request object which has the roleID
+  @param client object that connects to the server
+  @param base string for ldap search
+  @param getUsersWithRoleResult call back function
+*/
 function  getUsersWithRole( getUsersWithRoleRequest,client,base,getUsersWithRoleResult)
 {
 
@@ -107,7 +127,13 @@ function  getUsersWithRole( getUsersWithRoleRequest,client,base,getUsersWithRole
         });
 
 }
-
+/*this is the wrapper function for Login
+  it receives the 4 parameters and pass it to the Login function
+  @param LoginRoleRequest request with user credentitals for loggin in
+  @param client object that connects to the server
+  @param base string for ldap search
+  @param LoginResult call back function
+*/
 module.exports.Login= function(LoginRequest,client,base,LoginResult)
 {		
 Check(client,base,function(msg,state,client)
@@ -126,7 +152,13 @@ Check(client,base,function(msg,state,client)
 
 }
 
-
+/*this function Logs in a user via his/her credentials
+  it receives the 4 parameters and passed in it
+  @param LoginRoleRequest request with user credentitals for loggin in
+  @param client object that connects to the server
+  @param base string for ldap search
+  @param LoginResult call back function
+*/
 function Login(LoginRequest,client,base,LoginResult)
 {
     if(base.length==0)
@@ -175,7 +207,13 @@ function Login(LoginRequest,client,base,LoginResult)
         });
     });
 }
-
+/*this is the wrapper function for getUsersRolesForModule
+  it receives the 4 parameters and pass it to the getUsersRolesForModule function
+  @param getUsersRolesForModuleRequest request with moduleID and userID as attributes
+  @param client object that connects to the server
+  @param base string for ldap search
+  @param getUsersRolesForModuleResult call back function
+*/
 module.exports.getUsersRolesForModule= function(getUsersRolesForModuleRequest,client,base,getUsersRolesForModuleResult)
 {
 Check(client,base,function(msg,state,client)
@@ -193,7 +231,13 @@ Check(client,base,function(msg,state,client)
 );
 
 }
-
+/*this function gets the role for s specific user for a specific module
+  it receives the 4 parameters and pass in it
+  @param getUsersRolesForModuleRequest request with moduleID and userID as attributes
+  @param client object that connects to the server
+  @param base string for ldap search
+  @param getUsersRolesForModuleResult call back function
+*/
 function getUsersRolesForModule(getUsersRolesForModuleRequest,client,base,getUsersRolesForModuleResult) {
 
     if(base.length==0)
@@ -263,6 +307,7 @@ function getUsersRolesForModule(getUsersRolesForModuleRequest,client,base,getUse
 }
 
 //CALLBACK FUNCTIONS
+
 
 module.exports.LoginResult=function LoginResult(msg,uid)
 {
