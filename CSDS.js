@@ -1,3 +1,39 @@
+/*Exception*/
+var InvalidCredentialsException=
+{
+    name: "InvalidCredentialsException",
+    msg: "User does not exist in Database",
+    toString: function(){ return this.name + ": " + this.msg; }
+};
+var ConnectionFailedException =
+{
+    name: "ConnectionFailedException",
+    message: "User is not authorized to perform this action",
+    toString: function(){ return this.name + ": " + this.msg; }
+};
+var RoleDoesNotExistException =
+{
+    name: "ModuleDoesNotExistException",
+    msg: "This Module does not Exist",
+    toString: function(){ return this.name + ": " + this.msg; }
+};
+var UserNotInModuleException=
+{
+    name: "UserNotInModuleException",
+    message: "User Does not Exist or not in Module",
+    toString: function(){ return this.name + ": " + this.msg; }
+};
+
+var UserDoesNotExistException=
+{
+    name: "UserDoesNotExistException",
+    message: "User Does not Exist",
+    toString: function(){ return this.name + ": " + this.msg; }
+};
+
+
+
+
 /* this function is strictly for testing purposes to check there is a connection
   @param client what is being checked
   @param base needed for searching
@@ -41,7 +77,7 @@ function Check(client,base,Result)
     var assert=require("assert");
     return client.search(base, opts, function (err, res) {
         if (err)
-            return Result("UnSuccessful_Connection",false,client);
+            return Result(ConnectionFailedException,false,client);
 
         res.on('searchEntry', function (_entry) {
           // console.log(_entry.toObject());
@@ -49,7 +85,7 @@ function Check(client,base,Result)
         });
 
         res.on('error', function (err) {
-            return Result("UnSuccessful_Connection",false,client);
+            return Result(ConnectionFailedException,false,client);
         });
 
         res.on('end', function () {
@@ -109,7 +145,7 @@ function  getUsersWithRole( getUsersWithRoleRequest,client,base,getUsersWithRole
             if (err)
             {
                 client.unbind();
-                return  getUsersWithRoleResult(err, null,null);
+                return  getUsersWithRoleResult(ConnectionFailedException, null,null);
             }
             res.on('searchEntry', function (_entry)
             {
@@ -118,13 +154,13 @@ function  getUsersWithRole( getUsersWithRoleRequest,client,base,getUsersWithRole
 
             res.on('error', function (err) {
                 client.unbind();
-                return  getUsersWithRoleResult(err, null,null);
+                return  getUsersWithRoleResult(ConnectionFailedException, null,null);
             });
 
             res.on('end', function () {
                 if (!entry) {
                     client.unbind();
-                    return  getUsersWithRoleResult(new Error( getUsersWithRoleRequest.muid() + ' not found'), null);
+                    return  getUsersWithRoleResult(ModuleDoesNotExistException, null);
                 }
                 else
                 {
@@ -185,7 +221,7 @@ function Login(LoginRequest,client,base,LoginResult)
     return client.search(base, opts, function (err, res) {
         if (err) {
             client.unbind();
-            return LoginResult(err, null);
+            return LoginResult(ConnectionFailedException, null);
         }
         res.on('searchEntry', function (_entry) {
             entry = _entry;
@@ -193,20 +229,20 @@ function Login(LoginRequest,client,base,LoginResult)
 
         res.on('error', function (err) {
             client.unbind();
-            return LoginResult(err,null);
+            return LoginResult(ConnectionFailedException,null);
         });
 
         res.on('end', function () {
             if (!entry)
             {
                 client.unbind();
-                return LoginResult(new Error(LoginRequest.username() + ' not found'),null);
+                return LoginResult(UserDoesNotExistException,null);
             }
             return client.bind(entry.dn.toString(),LoginRequest.password(), function (err) {
                 if (err)
                 {
                     client.unbind();
-                    return LoginResult(err, null);
+                    return LoginResult(InvalidCredentialsException, null);
                 }
                 return client.unbind(function (err) {
                     assert.ifError(err);
@@ -266,7 +302,7 @@ function getUsersRolesForModule(getUsersRolesForModuleRequest,client,base,getUse
         {
             client.unbind();
             console.log("EEErr");
-            return getUsersRolesForModuleResult(err, null,null,null);
+            return getUsersRolesForModuleResult(ConnectionFailedException, null,null,null);
         }
         res.on('searchEntry', function (_entry)
         {
@@ -276,7 +312,7 @@ function getUsersRolesForModule(getUsersRolesForModuleRequest,client,base,getUse
 
         res.on('error', function (err) {
             client.unbind();
-            return getUsersRolesForModuleResult(err, null,getUsersRolesForModuleRequest.mID(),getUsersRolesForModuleRequest.uID());
+            return getUsersRolesForModuleResult(ConnectionFailedException, null,getUsersRolesForModuleRequest.mID(),getUsersRolesForModuleRequest.uID());
         });
 
         res.on('end', function () {
@@ -284,7 +320,7 @@ function getUsersRolesForModule(getUsersRolesForModuleRequest,client,base,getUse
             {
                 client.unbind();
 
-                return getUsersRolesForModuleResult(new Error(getUsersRolesForModuleRequest.mID() + ' is not a Existing module'), null,null,null);
+                return getUsersRolesForModuleResult(RoleDoesNotExistException, null,null,null);
             }
             else
             {  var arr=new Array();
@@ -301,7 +337,7 @@ function getUsersRolesForModule(getUsersRolesForModuleRequest,client,base,getUse
                 if(arr.length==0)
                 {
                     client.unbind();
-                    return getUsersRolesForModuleResult(new Error(getUsersRolesForModuleRequest.mID()+" does not Exist or Doesn not have this module"),getUsersRolesForModuleRequest.uID(), getUsersRolesForModuleRequest.mID(),arr);
+                    return getUsersRolesForModuleResult(UserNotInModuleException,getUsersRolesForModuleRequest.uID(), getUsersRolesForModuleRequest.mID(),arr);
                 }
                 else
                 {
@@ -377,29 +413,4 @@ module.exports.getUsersRolesForModuleResult=function getUsersRolesForModuleResul
         return JSON.stringify(result);
        }
 }
-
-var InvalidCredentialsException=
-{
-    name: "InvalidCredentialsException",
-    msg: "User does not exist in Database",
-    toString: function(){ return this.name + ": " + this.msg; }
-};
-var ConnectionFailedException =
-{
-    name: "ConnectionFailedException",
-    message: "User is not authorized to perform this action",
-    toString: function(){ return this.name + ": " + this.msg; }
-};
-var RoleDoesNotExistException =
-{
-    name: "ModuleDoesNotExistException",
-    msg: "This Module does not Exist",
-    toString: function(){ return this.name + ": " + this.msg; }
-};
-var UserNotInModuleException=
-{
-    name: "UserNotInModuleException",
-    message: "User Does not Exist or not in Module",
-    toString: function(){ return this.name + ": " + this.msg; }
-};
 
