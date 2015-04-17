@@ -377,3 +377,29 @@ module.exports.getUsersRolesForModuleResult=function getUsersRolesForModuleResul
         return JSON.stringify(result);
        }
 }
+
+var InvalidCredentialsException=
+{
+    name: "InvalidCredentialsException",
+    msg: "User does not exist in Database",
+    toString: function(){ return this.name + ": " + this.msg; }
+};
+var ConnectionFailedException =
+{
+    name: "ConnectionFailedException",
+    message: "User is not authorized to perform this action",
+    toString: function(){ return this.name + ": " + this.msg; }
+};
+var RoleDoesNotExistException =
+{
+    name: "ModuleDoesNotExistException",
+    msg: "This Module does not Exist",
+    toString: function(){ return this.name + ": " + this.msg; }
+};
+var UserNotInModuleException=
+{
+    name: "UserNotInModuleException",
+    message: "User Does not Exist or not in Module",
+    toString: function(){ return this.name + ": " + this.msg; }
+};
+
