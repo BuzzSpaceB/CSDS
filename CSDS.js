@@ -160,7 +160,7 @@ function  getUsersWithRole( getUsersWithRoleRequest,client,base,getUsersWithRole
             res.on('end', function () {
                 if (!entry) {
                     client.unbind();
-                    return  getUsersWithRoleResult(ModuleDoesNotExistException, null);
+                    return  getUsersWithRoleResult(RoleDoesNotExistException, null);
                 }
                 else
                 {
